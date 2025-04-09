@@ -61,8 +61,9 @@ const UnicornsContainer = () => {
 
             if (!response.ok) throw new Error('Error al actualizar el unicornio');
 
-            const updatedUnicorn = await response.json();
-            setUnicorns(unicorns.map(u => u._id === id ? updatedUnicorn : u));
+            // const updatedUnicorn = await response.json();
+            // setUnicorns(unicorns.map(u => u._id === id ? updatedUnicorn : u));
+            setUnicorns(unicorns.map(u => u._id === id ? { ...u, ...updatedData } : u));
             return true;
         } catch (error) {
             setError(error.message);

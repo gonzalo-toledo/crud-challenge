@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 import './App.css';
-import UnicornsContainer from './Unicorns/UnicornsContainer';
+import UnicornsContainer from './Unicorns';
 
 function App() {
   return (

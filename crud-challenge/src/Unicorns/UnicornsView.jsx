@@ -68,59 +68,68 @@ const UnicornsView = ({
     return (
         <Fragment>
             <Toast ref={toast} />
-            
+            <h1>Challenge CRUD</h1>
             {/* Formulario de creación */}
             <div className="p-card p-mb-4 p-p-4">
-                <h3>Crear nuevo unicornio</h3>
-                <form onSubmit={handleCreate} className="p-fluid">
-                    <div className="p-grid p-formgrid">
-                        <div className="p-field p-col-12 p-md-3">
-                            <label htmlFor="name">Nombre</label>
-                            <InputText
-                                id="name"
-                                value={newUnicorn.name}
-                                onChange={(e) => setNewUnicorn({...newUnicorn, name: e.target.value})}
-                                required
-                            />
-                        </div>
-                        <div className="p-field p-col-12 p-md-3">
-                            <label htmlFor="color">Color</label>
-                            <InputText
-                                id="color"
-                                value={newUnicorn.color}
-                                onChange={(e) => setNewUnicorn({...newUnicorn, color: e.target.value})}
-                                required
-                            />
-                        </div>
-                        <div className="p-field p-col-12 p-md-2">
-                            <label htmlFor="age">Edad</label>
-                            <InputNumber
-                                id="age"
-                                value={newUnicorn.age}
-                                onValueChange={(e) => setNewUnicorn({...newUnicorn, age: e.value})}
-                                required
-                            />
-                        </div>
-                        <div className="p-field p-col-12 p-md-3">
-                            <label htmlFor="power">Poder</label>
-                            <InputText
-                                id="power"
-                                value={newUnicorn.power}
-                                onChange={(e) => setNewUnicorn({...newUnicorn, power: e.target.value})}
-                                required
-                            />
-                        </div>
-                        <div className="p-field p-col-12 p-md-1 p-flex p-ai-end">
-                            <Button 
-                                label="Crear" 
-                                icon="pi pi-plus" 
-                                type="submit"
-                                loading={loading}
-                                className="p-button-raised"
-                            />
-                        </div>
-                    </div>
-                </form>
+                <form onSubmit={handleCreate}>
+    <fieldset>
+        <legend>Información del unicornio</legend>
+
+        <div className="p-fluid" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+                <label htmlFor="name" style={{ flex: 1 }}>Nombre</label>
+                <InputText
+                    id="name"
+                    value={newUnicorn.name}
+                    onChange={(e) => setNewUnicorn({...newUnicorn, name: e.target.value})}
+                    required
+                    style={{ flex: 3 }}
+                />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+                <label htmlFor="color" style={{ flex: 1 }}>Color</label>
+                <InputText
+                    id="color"
+                    value={newUnicorn.color}
+                    onChange={(e) => setNewUnicorn({...newUnicorn, color: e.target.value})}
+                    required
+                    style={{ flex: 3 }}
+                />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+                <label htmlFor="age" style={{ flex: 1 }}>Edad</label>
+                <InputNumber
+                    id="age"
+                    value={newUnicorn.age}
+                    onValueChange={(e) => setNewUnicorn({...newUnicorn, age: e.value})}
+                    required
+                    style={{ flex: 3 }}
+                />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+                <label htmlFor="power" style={{ flex: 1 }}>Poder</label>
+                <InputText
+                    id="power"
+                    value={newUnicorn.power}
+                    onChange={(e) => setNewUnicorn({...newUnicorn, power: e.target.value})}
+                    required
+                    style={{ flex: 3 }}
+                />
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <Button 
+                    label="Crear" 
+                    icon="pi pi-plus" 
+                    type="submit"
+                    loading={loading}
+                    className="p-button-raised"
+                />
+            </div>
+        </div>
+    </fieldset>
+</form>
+
+
             </div>
 
             {/* Formulario de edición */}
