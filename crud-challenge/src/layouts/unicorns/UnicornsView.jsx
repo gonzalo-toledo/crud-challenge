@@ -1,11 +1,41 @@
 import React, { Fragment } from "react";
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { Button } from 'primereact/button';
+// import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import { InputText } from 'primereact/inputtext';
 import { InputNumber } from 'primereact/inputnumber';
 import { useState } from "react";
+
+// importar:
+import {Formik, Form, Field, ErrorMessage} from 'formik';
+import * as Yup from 'yup';
+import { Button } from "primereact/button";
+
+//primero definir initialValues
+const initialValues = {
+    name: '',
+    color: '',
+    age: 0,
+    power: ''
+
+}
+
+// definir el esquema de validacion
+const validationSchema = Yup.object().shape({
+    name: Yup
+        .string()
+        .min(2, 'El nombre es muy corto')
+        .max(50, 'El nombre es muy largo') 
+        .required('El nombre es requerido'),
+});
+
+
+const onSubmit = (values) => {
+    console.log('Formulario del formikenviado:', values);
+};
+
+
 
 const UnicornsView = ({ 
     unicorns, 
@@ -70,6 +100,25 @@ const UnicornsView = ({
             <Toast ref={toast} />
             <h1>Challenge CRUD</h1>
             {/* Formulario de creación */}
+
+            <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={onSubmit}
+            >
+                <Form>
+                    <label htmlFor="">Nombre</label>
+                    {/* input de texto */}
+                    <Field name="name" type="text" />
+                    {/* mostrar el error */}
+                    <ErrorMessage name="name" component="div" />
+                    {/* Boton de envio al ser tipo submit va usar la funcion onSubmit*/}
+                    <Button label="Crear unicornio" type="submit"></Button>  
+
+                </Form>
+
+            </Formik>
+
             <div className="p-card p-mb-4 p-p-4">
                 <form onSubmit={handleCreate}>
     <fieldset>
