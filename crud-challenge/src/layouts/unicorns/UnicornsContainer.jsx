@@ -1,32 +1,38 @@
 import React from "react";
 import UnicornsView from "./UnicornsView";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { UnicornContext } from "../../context/UnicornContext";
 
-const API_URL = 'https://crudcrud.com/api/23e9c2b3676d42f7a2a4e5990b9d5d71/unicorns';
+
+const API_URL = 'https://crudcrud.com/api/137d1a6181b341c1b10223e7cb746b29/unicorns';
+
 
 const UnicornsContainer = () => {
-    const [unicorns, setUnicorns] = useState([]);
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [editingUnicorn, setEditingUnicorn] = useState(null);
 
-    const fetchUnicorns = async () => {
-        try {
-            setLoading(true);
-            const response = await fetch(API_URL);
-            
-            if (!response.ok) throw new Error(response.statusText);
-            
-            const data = await response.json();
-            setUnicorns(data);
-        } catch (error) {
-            setError(error.message);
-            console.error("Fetch error:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const {unicorns, getUnicorns} = useContext(UnicornContext)
 
+
+    // const fetchUnicorns = async () => {
+    //     try {
+    //         setLoading(true);
+    //         const response = await fetch(API_URL);
+            
+    //         if (!response.ok) throw new Error(response.statusText);
+            
+    //         const data = await response.json();
+    //         setUnicorns(data);
+    //     } catch (error) {
+    //         setError(error.message);
+    //         console.error("Fetch error:", error);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
+    
     const createUnicorn = async (newUnicorn) => {
         try {
             setLoading(true);
@@ -38,8 +44,9 @@ const UnicornsContainer = () => {
 
             if (!response.ok) throw new Error('Error al crear el unicornio');
 
-            const createdUnicorn = await response.json();
-            setUnicorns([...unicorns, createdUnicorn]);
+            // const createdUnicorn = await response.json();
+            // setUnicorns([...unicorns, createdUnicorn]);
+            await getUnicorns(); // Actualiza la lista de unicornios después de crear uno nuevo
             return true;
         } catch (error) {
             setError(error.message);
@@ -83,7 +90,7 @@ const UnicornsContainer = () => {
         } finally {
             setLoading(false);
             setEditingUnicorn(null);
-            fetchUnicorns();
+            getUnicorns();
         }
     };
 
@@ -120,9 +127,8 @@ const UnicornsContainer = () => {
         }
     };
 
-    useEffect(() => {
-        fetchUnicorns();
-    }, []);
+
+
 
     return (
         <UnicornsView 
