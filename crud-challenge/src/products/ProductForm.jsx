@@ -1,44 +1,60 @@
+// ProductForm.jsx
 import React from 'react';
 import useProductForm from './useProductForm';
 
-const UnicornForm = () => {
+const ProductForm = ({ onCreate }) => {
   const {
     formData,
     handleChange,
     handleSubmit,
-    isEditing
-  } = useProductForm();
+    errors,
+  } = useProductForm(onCreate);
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1rem' }}>
       <input
         name="name"
         placeholder="Nombre"
         value={formData.name}
         onChange={handleChange}
+        style={styles.input}
       />
-      <input
-        name="age"
-        placeholder="Edad"
-        value={formData.age}
-        onChange={handleChange}
-      />
-      <input
-        name="color"
-        placeholder="Color"
-        value={formData.color}
-        onChange={handleChange}
-      />
-      <input
-        name="power"
-        placeholder="Poder"
-        value={formData.power}
-        onChange={handleChange}
-      />
+      {errors.name && <span style={styles.error}>{errors.name}</span>}
 
-      <button type="submit">{isEditing ? 'Actualizar' : 'Crear'}</button>
+      <input
+        name="price"
+        placeholder="Precio"
+        value={formData.price}
+        onChange={handleChange}
+        type="number"
+        style={styles.input}
+      />
+      {errors.price && <span style={styles.error}>{errors.price}</span>}
+
+      <button type="submit" style={styles.addButton}>Agregar</button>
     </form>
   );
 };
 
-export default UnicornForm;
+const styles = {
+  input: {
+    padding: '0.5rem',
+    borderRadius: '4px',
+    border: '1px solid #ccc',
+  },
+  error: {
+    color: 'red',
+    fontSize: '0.9rem',
+  },
+  addButton: {
+    backgroundColor: '#38b000',
+    color: '#fff',
+    padding: '0.5rem 1rem',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    alignSelf: 'flex-start',
+  },
+};
+
+export default ProductForm;

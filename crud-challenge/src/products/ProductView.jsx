@@ -1,10 +1,20 @@
 import React, { useState } from "react";
 import initialProducts from "./ProductData";
+import ProductForm from "./ProductForm";
 
 const ProductView = () => {
   const [productList, setProductList] = useState(initialProducts);
   const [editingProduct, setEditingProduct] = useState(null);
   const [formData, setFormData] = useState({ name: "", price: "" });
+
+  const handleCreate = (product) => {
+    const newProduct = {
+      id: productList.length + 1,
+      name: product.name,
+      price: product.price,
+    };
+    setProductList([...productList, newProduct]);
+  };
 
   const handleDelete = (id) => {
     const updated = productList.filter((product) => product.id !== id);
@@ -27,40 +37,13 @@ const ProductView = () => {
     setFormData({ name: "", price: "" });
   };
 
-  const handleCreate = () => {
-    const newProduct = {
-      id: productList.length + 1,
-      name: formData.name,
-      price: formData.price,
-    };
-    setProductList([...productList, newProduct]);
-    setFormData({ name: "", price: "" });
-  };
-
   return (
     <div style={styles.container}>
       <h1 style={styles.title}>Productos</h1>
 
-      {/* Formulario */}
-      <div style={styles.form}>
-        <input
-          type="text"
-          placeholder="Nombre"
-          value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          style={styles.input}
-        />
-        <input
-          type="number"
-          placeholder="Precio"
-          value={formData.price}
-          onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
-          style={styles.input}
-        />
-        <button onClick={handleCreate} style={styles.addButton}>Agregar</button>
-      </div>
+      {/* Formulario separado */}
+      <ProductForm onCreate={handleCreate} />
 
-      {/* Lista de productos */}
       <ul style={styles.list}>
         {productList.map((product) => (
           <li key={product.id} style={styles.card}>
@@ -75,7 +58,6 @@ const ProductView = () => {
         ))}
       </ul>
 
-      {/* Formulario de edición */}
       {editingProduct && (
         <div style={styles.editForm}>
           <h2>Editando: {editingProduct.name}</h2>
@@ -100,7 +82,6 @@ const ProductView = () => {
   );
 };
 
-// 🎨 Estilos
 const styles = {
   container: {
     padding: '1rem',
@@ -115,15 +96,19 @@ const styles = {
   },
   form: {
     display: 'flex',
+    flexDirection: 'column',
     gap: '0.5rem',
     marginBottom: '1rem',
-    alignItems: 'center',
   },
   input: {
     padding: '0.5rem',
     borderRadius: '4px',
     border: '1px solid #ccc',
     flex: '1',
+  },
+  error: {
+    color: 'red',
+    fontSize: '0.9rem',
   },
   addButton: {
     backgroundColor: '#38b000',
@@ -132,6 +117,7 @@ const styles = {
     border: 'none',
     borderRadius: '5px',
     cursor: 'pointer',
+    alignSelf: 'flex-start',
   },
   list: {
     listStyle: 'none',
@@ -146,6 +132,7 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
+    color: 'white',
   },
   buttons: {
     display: 'flex',
@@ -173,6 +160,7 @@ const styles = {
     border: '1px solid #ccc',
     borderRadius: '8px',
     backgroundColor: '#2c3e50',
+    color: 'white',
   },
   saveButton: {
     marginTop: '0.5rem',
@@ -183,6 +171,8 @@ const styles = {
     borderRadius: '5px',
     cursor: 'pointer',
   },
+
+// 🎨 Estilos
 };
 
 export default ProductView;
