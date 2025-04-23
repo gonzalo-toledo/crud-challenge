@@ -1,3 +1,3 @@
-1 Hace un npm install, pero ojo con estar parado en la carpeta correcta que es crud-challenge/crud-challenge
-2 Luego hace un npm run dev
-3 Disfruta 😎
+- 1 Hace un npm install, pero ojo con estar parado en la carpeta correcta que es crud-challenge/crud-challenge
+- 2 Luego hace un npm run dev
+- 3 Disfruta 😎
