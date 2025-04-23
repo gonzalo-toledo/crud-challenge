@@ -1,5 +1,5 @@
 import React from 'react';
-import useProductForm from './useProductForm';
+import useUnicornForm from './useUnicornForm';
 
 const UnicornForm = () => {
   const {
@@ -7,7 +7,7 @@ const UnicornForm = () => {
     handleChange,
     handleSubmit,
     isEditing
-  } = useProductForm();
+  } = useUnicornForm();
 
   return (
     <form onSubmit={handleSubmit}>

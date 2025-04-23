@@ -1,13 +1,15 @@
-import { Fragment } from 'react';
-import './App.css';
-import UnicornsContainer from './Unicorns/UnicornsContainer';
+import React, { Fragment } from 'react';
+import { UnicornsProvider } from './context/UnicornsContext';
+import ProductsPage from './products';
+import UnicornsPage from './unicorns';
 
-function App() {
-  return (
-    <Fragment>
-        <UnicornsContainer />
-    </Fragment>
-  );
-}
+const App = () => (
+  <Fragment>
+    <UnicornsProvider>
+      <UnicornsPage />
+    </UnicornsProvider>
+    <ProductsPage />
+  </Fragment>
+);
 
 export default App;
