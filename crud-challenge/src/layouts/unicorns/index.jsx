@@ -1,13 +1,18 @@
 import UnicornsContainer from "./UnicornsContainer";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
 
 
 const UnicornsModule = () => {
     return (
-        <UnicornsContainer />
+        <Router>
+            <Routes>
+                <Route path="/unicornios" element={<UnicornsContainer />} />
+                {/* Puedes agregar más rutas aquí si es necesario */}
+            </Routes>
+        </Router>
+        
     )
 }
 
 export default UnicornsModule;
-// Este componente es un módulo que encapsula la lógica de UnicornsContainer.
-// Se puede usar para organizar mejor el código y facilitar la importación en otros lugares.
-// En este caso, simplemente se está exportando UnicornsContainer como el componente principal del módulo.

@@ -3,37 +3,12 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 // import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
-import { InputText } from 'primereact/inputtext';
-import { InputNumber } from 'primereact/inputnumber';
 import { useState } from "react";
 
 // importar:
 import {Formik, Form, Field, ErrorMessage} from 'formik';
 import * as Yup from 'yup';
 import { Button } from "primereact/button";
-
-//primero definir initialValues
-const initialValues = {
-    name: '',
-    color: '',
-    age: 0,
-    power: ''
-
-}
-
-// definir el esquema de validacion
-const validationSchema = Yup.object().shape({
-    name: Yup
-        .string()
-        .min(2, 'El nombre es muy corto')
-        .max(50, 'El nombre es muy largo') 
-        .required('El nombre es requerido'),
-});
-
-
-const onSubmit = (values) => {
-    console.log('Formulario del formikenviado:', values);
-};
 
 
 
@@ -45,16 +20,32 @@ const UnicornsView = ({
     onEdit,
     onCreate,
     onSaveEdit,
-    editingUnicorn,
-    setEditingUnicorn
+    editingUnicorn,    
 }) => {
     const toast = React.useRef(null);
-    const [newUnicorn, setNewUnicorn] = useState({
-        name: '',
-        color: '',
-        age: 0,
-        power: ''
+
+    //primero definir initialValues 
+    const initialValues = {
+        name: editingUnicorn?.name || '',
+        color: editingUnicorn?.color || '',
+        age: editingUnicorn?.age || '',
+        power: editingUnicorn?.power || '',
+    }
+
+    // definir el esquema de validacion
+    const validationSchema = Yup.object().shape({
+        name: Yup.string()
+            .min(2, 'El nombre es muy corto')
+            .max(50, 'El nombre es muy largo') 
+            .required('El nombre es requerido'),
+        color: Yup.string()
+            .required('El color es requerido'),
+        age: Yup.number()
+            .required('La edad es requerida'),
+        power: Yup.string()
+            .required('El poder es requerido')
     });
+
 
     const bodyActions = (rowData) => {
         return (
@@ -77,16 +68,6 @@ const UnicornsView = ({
         );
     };
 
-    const handleCreate = (e) => {
-        e.preventDefault();
-        onCreate(newUnicorn);
-        setNewUnicorn({
-            name: '',
-            color: '',
-            age: 0,
-            power: ''
-        });
-    };
 
     if (error) {
         return <div className="p-m-4 p-d-inline-flex p-ai-center">
@@ -94,7 +75,8 @@ const UnicornsView = ({
             <span>Error: {error}</span>
         </div>;
     }
-
+    
+    console.log("initialValues", initialValues);
     return (
         <Fragment>
             <Toast ref={toast} />
@@ -104,144 +86,42 @@ const UnicornsView = ({
             <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
-            onSubmit={onSubmit}
+            /* a onSubmit se le pasa la funcion para crear el unicornio */
+            onSubmit={editingUnicorn ? onSaveEdit : onCreate}
+            /* enableReinitialize permite que el formulario se actualice cuando cambian los valores iniciales */
+            enableReinitialize 
+
             >
                 <Form>
-                    <label htmlFor="">Nombre</label>
-                    {/* input de texto */}
-                    <Field name="name" type="text" />
-                    {/* mostrar el error */}
-                    <ErrorMessage name="name" component="div" />
+                    <div>
+                        <label htmlFor="">Nombre</label>
+                        {/* Field hace referencia al initialValues*/}
+                        <Field name="name" type="text" />
+                        {/* ErrorMessage hace referencua al esquema de validacion */}
+                        <ErrorMessage name="name" component="div" />
+                    </div>
+                    <div>
+                        <label htmlFor="">Color</label>
+                        <Field name="color"/>
+                        <ErrorMessage name="color" component='div' />                    </div>
+                    <div>
+                        <label htmlFor="">Edad</label>
+                        <Field name="age"/>
+                        <ErrorMessage name="age" component='div' />
+                    </div>
+                    <div>
+                        <label htmlFor="">Poder</label>
+                        <Field name="power"/>
+                        <ErrorMessage name="power" component='div' />
+                    </div>
+
                     {/* Boton de envio al ser tipo submit va usar la funcion onSubmit*/}
-                    <Button label="Crear unicornio" type="submit"></Button>  
+                    <Button label={editingUnicorn ? "Guardar unicornio" : "Crear unicornio"} type="submit"></Button>  
 
                 </Form>
 
             </Formik>
 
-            <div className="p-card p-mb-4 p-p-4">
-                <form onSubmit={handleCreate}>
-    <fieldset>
-        <legend>Información del unicornio</legend>
-
-        <div className="p-fluid" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-                <label htmlFor="name" style={{ flex: 1 }}>Nombre</label>
-                <InputText
-                    id="name"
-                    value={newUnicorn.name}
-                    onChange={(e) => setNewUnicorn({...newUnicorn, name: e.target.value})}
-                    required
-                    style={{ flex: 3 }}
-                />
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-                <label htmlFor="color" style={{ flex: 1 }}>Color</label>
-                <InputText
-                    id="color"
-                    value={newUnicorn.color}
-                    onChange={(e) => setNewUnicorn({...newUnicorn, color: e.target.value})}
-                    required
-                    style={{ flex: 3 }}
-                />
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-                <label htmlFor="age" style={{ flex: 1 }}>Edad</label>
-                <InputNumber
-                    id="age"
-                    value={newUnicorn.age}
-                    onValueChange={(e) => setNewUnicorn({...newUnicorn, age: e.value})}
-                    required
-                    style={{ flex: 3 }}
-                />
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-                <label htmlFor="power" style={{ flex: 1 }}>Poder</label>
-                <InputText
-                    id="power"
-                    value={newUnicorn.power}
-                    onChange={(e) => setNewUnicorn({...newUnicorn, power: e.target.value})}
-                    required
-                    style={{ flex: 3 }}
-                />
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <Button 
-                    label="Crear" 
-                    icon="pi pi-plus" 
-                    type="submit"
-                    loading={loading}
-                    className="p-button-raised"
-                />
-            </div>
-        </div>
-    </fieldset>
-</form>
-
-
-            </div>
-
-            {/* Formulario de edición */}
-            {editingUnicorn && (
-                <div className="p-card p-mb-4 p-p-4">
-                    <h3>Editando unicornio</h3>
-                    <div className="p-fluid">
-                        <div className="p-grid p-formgrid">
-                            <div className="p-field p-col-12 p-md-3">
-                                <label htmlFor="edit-name">Nombre</label>
-                                <InputText
-                                    id="edit-name"
-                                    value={editingUnicorn.name}
-                                    onChange={(e) => setEditingUnicorn({...editingUnicorn, name: e.target.value})}
-                                    required
-                                />
-                            </div>
-                            <div className="p-field p-col-12 p-md-3">
-                                <label htmlFor="edit-color">Color</label>
-                                <InputText
-                                    id="edit-color"
-                                    value={editingUnicorn.color}
-                                    onChange={(e) => setEditingUnicorn({...editingUnicorn, color: e.target.value})}
-                                    required
-                                />
-                            </div>
-                            <div className="p-field p-col-12 p-md-2">
-                                <label htmlFor="edit-age">Edad</label>
-                                <InputNumber
-                                    id="edit-age"
-                                    value={editingUnicorn.age}
-                                    onValueChange={(e) => setEditingUnicorn({...editingUnicorn, age: e.value})}
-                                    required
-                                />
-                            </div>
-                            <div className="p-field p-col-12 p-md-3">
-                                <label htmlFor="edit-power">Poder</label>
-                                <InputText
-                                    id="edit-power"
-                                    value={editingUnicorn.power}
-                                    onChange={(e) => setEditingUnicorn({...editingUnicorn, power: e.target.value})}
-                                    required
-                                />
-                            </div>
-                            <div className="p-field p-col-12 p-md-1 p-flex p-ai-end p-jc-end">
-                                <Button 
-                                    label="Guardar" 
-                                    icon="pi pi-check" 
-                                    onClick={onSaveEdit}
-                                    loading={loading}
-                                    className="p-button-success p-mr-2"
-                                />
-                                <Button 
-                                    label="Cancelar" 
-                                    icon="pi pi-times" 
-                                    onClick={() => setEditingUnicorn(null)}
-                                    className="p-button-secondary"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
 
             {/* Tabla de datos */}
             <DataTable 
