@@ -1,4 +1,6 @@
-import { useState, useEffect } from 'react';
+// useUnicornForm.jsx
+import { useFormik } from 'formik';
+import { useEffect } from 'react';
 import { useUnicorns } from '../context/UnicornsContext';
 import * as Yup from 'yup';
 
@@ -16,63 +18,42 @@ const useUnicornForm = () => {
     editingUnicorn,
   } = useUnicorns();
 
-  const [formData, setFormData] = useState({
-    name: '',
-    age: '',
-    color: '',
-    power: '',
+  const formik = useFormik({
+    initialValues: {
+      name: '',
+      age: '',
+      color: '',
+      power: '',
+    },
+    validationSchema,
+    enableReinitialize: true,
+    onSubmit: (values, { resetForm }) => {
+      if (editingUnicorn) {
+        handleUpdate(values);
+      } else {
+        handleCreate(values);
+      }
+      resetForm();
+    },
   });
-
-  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (editingUnicorn) {
-      setFormData({
+      formik.setValues({
         name: editingUnicorn.name || '',
         age: editingUnicorn.age || '',
         color: editingUnicorn.color || '',
         power: editingUnicorn.power || '',
       });
-    } else {
-      setFormData({ name: '', age: '', color: '', power: '' });
     }
   }, [editingUnicorn]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      await validationSchema.validate(formData, { abortEarly: false });
-      setErrors({});
-
-      if (editingUnicorn) {
-        handleUpdate(formData);
-      } else {
-        handleCreate(formData);
-      }
-
-      setFormData({ name: '', age: '', color: '', power: '' });
-
-    } catch (err) {
-      const formattedErrors = {};
-      err.inner.forEach(e => {
-        formattedErrors[e.path] = e.message;
-      });
-      setErrors(formattedErrors);
-    }
-  };
-
   return {
-    formData,
-    handleChange,
-    handleSubmit,
+    formData: formik.values,
+    handleChange: formik.handleChange,
+    handleSubmit: formik.handleSubmit,
     isEditing: !!editingUnicorn,
-    errors
+    errors: formik.errors,
   };
 };
 
