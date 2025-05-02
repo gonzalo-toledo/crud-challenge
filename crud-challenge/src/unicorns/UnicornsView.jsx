@@ -1,6 +1,8 @@
 import React from 'react';
 import { useUnicorns } from '../context/UnicornsContext';
 import UnicornForm from './UnicornForm';
+import { Button } from 'primereact/button';
+import exportToPdf from '../utils/ExportToPdf';
 
 const UnicornsView = () => {
   const {
@@ -13,6 +15,7 @@ const UnicornsView = () => {
   return (
     <div style={styles.container}>
       <h2 style={styles.title}>Unicornios</h2>
+      <Button onClick={() => exportToPdf(unicorns,"Unicorns", ["ID", "Nombre", "Edad", "Color", "Poder"])}>Crear PDF</Button>
       <UnicornForm />
 
       <ul style={styles.list}>

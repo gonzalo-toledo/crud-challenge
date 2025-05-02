@@ -1,8 +1,9 @@
 // context/UnicornsContext.jsx
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import axios from 'axios';
 
 const UnicornsContext = createContext();
-const API_URL = 'https://crudcrud.com/api/5100280788af4828a6cf4b77b9da7118/unicorns';
+const API_URL = 'https://crudcrud.com/api/a2aeaf78bbd3499aa2db4dd7bd34a669/unicorns';
 
 export const UnicornsProvider = ({ children }) => {
   const [unicorns, setUnicorns] = useState([]);
@@ -10,52 +11,46 @@ export const UnicornsProvider = ({ children }) => {
 
   const getUnicorns = async () => {
     try {
-      const res = await fetch(API_URL);
-      const data = await res.json();
+      const { data } = await axios.get(API_URL);
       setUnicorns(data);
     } catch (err) {
       console.error('Error al obtener unicornios:', err);
     }
   };
+  
 
   const handleCreate = async (values) => {
     try {
-      const res = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values),
-      });
-      if (res.ok) getUnicorns();
-    } catch (err) {
-      console.error('Error al crear unicornio:', err);
+      const response = await axios.post(API_URL, values);
+      console.log('Unicornio creado:', response.data);
+      await getUnicorns();
+    } catch (error) {
+      console.error('Error al crear unicornio:', error);
     }
   };
-
+  
   const handleUpdate = async (values) => {
     if (!editingUnicorn) return;
     try {
-      await fetch(`${API_URL}/${editingUnicorn._id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values),
-      });
+      const response = await axios.put(`${API_URL}/${editingUnicorn._id}`, values);
+      console.log('Unicornio actualizado:', response.data);
       setEditingUnicorn(null);
-      getUnicorns();
-    } catch (err) {
-      console.error('Error al actualizar unicornio:', err);
+      await getUnicorns();
+    } catch (error) {
+      console.error('Error al actualizar unicornio:', error);
     }
   };
-
+  
   const handleDelete = async (id) => {
     try {
-      await fetch(`${API_URL}/${id}`, {
-        method: 'DELETE',
-      });
-      getUnicorns();
-    } catch (err) {
-      console.error('Error al eliminar unicornio:', err);
+      const response = await axios.delete(`${API_URL}/${id}`);
+      console.log('Unicornio eliminado:', response.data);
+      await getUnicorns();
+    } catch (error) {
+      console.error('Error al eliminar unicornio:', error);
     }
   };
+  
 
   const startEdit = (unicorn) => {
     setEditingUnicorn(unicorn);
