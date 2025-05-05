@@ -1,92 +1,142 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useUnicorns } from '../context/UnicornsContext';
 import UnicornForm from './UnicornForm';
 import { Button } from 'primereact/button';
+import { Dialog } from 'primereact/dialog';
+import { Card } from 'primereact/card';
 import exportToPdf from '../utils/ExportToPdf';
 
 const UnicornsView = () => {
   const {
     unicorns,
     handleDelete,
-    startEdit,
+    handleCreate,
+    handleUpdate,
     editingUnicorn,
+    startEdit,
   } = useUnicorns();
 
-  return (
-    <div style={styles.container}>
-      <h2 style={styles.title}>Unicornios</h2>
-      <Button onClick={() => exportToPdf(unicorns,"Unicorns", ["ID", "Nombre", "Edad", "Color", "Poder"])}>Crear PDF</Button>
-      <UnicornForm />
+  const [displayModal, setDisplayModal] = useState(false);
 
-      <ul style={styles.list}>
-        {unicorns.map((u) => (
-          <li key={u._id} style={styles.card}>
-            <div style={styles.details}>
-              <strong>{u.name}</strong> ({u.age} años)
-              <br />
-              Color: <span style={{ color: u.color.toLowerCase() }}>{u.color}</span>
-              <br />
-              Poder: {u.power}
-            </div>
-            <div style={styles.buttons}>
-              <button style={styles.editButton} onClick={() => startEdit(u)}>Editar</button>
-              <button style={styles.deleteButton} onClick={() => handleDelete(u._id)}>Eliminar</button>
-            </div>
-          </li>
-        ))}
-      </ul>
+  const openNew = () => {
+    startEdit(null);
+    setDisplayModal(true);
+  };
+
+  const onSubmit = (values) => {
+    if (editingUnicorn) {
+      handleUpdate(values);
+    } else {
+      handleCreate(values);
+    }
+    setDisplayModal(false);
+  };
+
+  const footer = (unicorn) => (
+    <div className="unicorn-card-footer">
+      <Button 
+        icon="pi pi-pencil" 
+        className="p-button-rounded p-button-warning p-button-outlined" 
+        onClick={() => {
+          startEdit(unicorn);
+          setDisplayModal(true);
+        }}
+      />
+      <Button 
+        icon="pi pi-trash" 
+        className="p-button-rounded p-button-danger p-button-outlined" 
+        onClick={() => handleDelete(unicorn._id)}
+      />
     </div>
   );
-};
 
-const styles = {
-  container: {
-    padding: '1rem',
-    maxWidth: '800px',
-    margin: '0 auto',
-  },
-  title: {
-    fontSize: '2rem',
-    marginBottom: '1rem',
-    color: '#7b2cbf',
-  },
-  list: {
-    listStyle: 'none',
-    padding: 0,
-  },
-  card: {
-    backgroundColor: '#d35400',
-    padding: '1rem',
-    marginBottom: '1rem',
-    borderRadius: '8px',
-    boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  details: {
-    lineHeight: '1.5',
-  },
-  buttons: {
-    display: 'flex',
-    gap: '0.5rem',
-  },
-  editButton: {
-    backgroundColor: '#4caf50',
-    color: 'white',
-    border: 'none',
-    padding: '0.5rem 1rem',
-    borderRadius: '5px',
-    cursor: 'pointer',
-  },
-  deleteButton: {
-    backgroundColor: '#f44336',
-    color: 'white',
-    border: 'none',
-    padding: '0.5rem 1rem',
-    borderRadius: '5px',
-    cursor: 'pointer',
-  },
+  // Función para generar un fondo de degradado basado en el color del unicornio
+  const getGradientBackground = (color) => {
+    return `linear-gradient(135deg, ${color}22 0%, ${color}66 100%)`;
+  };
+
+  return (
+    <div className="unicorns-container">
+      <div className="unicorns-header">
+        <h2 className="unicorns-title">✨ Mis Unicornios Mágicos ✨</h2>
+        <div className="unicorns-actions">
+          <Button 
+            label="Nuevo Unicornio" 
+            icon="pi pi-plus" 
+            onClick={openNew}
+            className="p-button-help unicorn-button"
+          />
+          <Button 
+            label="Exportar PDF" 
+            icon="pi pi-file-pdf" 
+            onClick={() => exportToPdf(unicorns, "Unicorns", ["ID", "Nombre", "Edad", "Color", "Poder"])}
+            className="p-button-danger unicorn-button"
+          />
+        </div>
+      </div>
+
+      {unicorns.length === 0 ? (
+        <div className="unicorns-empty-state">
+          <i className="pi pi-star-fill empty-icon"></i>
+          <p>¡No hay unicornios todavía! Añade uno nuevo para comenzar tu colección mágica.</p>
+          <Button 
+            label="Crear Primer Unicornio" 
+            icon="pi pi-plus" 
+            onClick={openNew}
+            className="p-button-help"
+          />
+        </div>
+      ) : (
+        <div className="unicorns-grid">
+          {unicorns.map((unicorn) => (
+            <div key={unicorn._id} className="unicorn-card-wrapper">
+              <Card 
+                title={
+                  <div className="unicorn-card-title">
+                    <span>{unicorn.name}</span>
+                    <div className="unicorn-color-dot" style={{ backgroundColor: unicorn.color }}></div>
+                  </div>
+                }
+                subTitle={`${unicorn.age} años de magia`}
+                footer={() => footer(unicorn)}
+                className="unicorn-card"
+                style={{ background: getGradientBackground(unicorn.color) }}
+              >
+                <div className="unicorn-card-content">
+                  <div className="unicorn-color-display" style={{ backgroundColor: unicorn.color }}>
+                    <i className="pi pi-star-fill unicorn-icon"></i>
+                  </div>
+                  <div className="unicorn-details">
+                    <p className="unicorn-power">
+                      <i className="pi pi-bolt"></i> Poder: {unicorn.power}
+                    </p>
+                    <div className="unicorn-color-code">
+                      <span>Color: </span>
+                      <span className="color-hex">{unicorn.color}</span>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <Dialog 
+        visible={displayModal} 
+        onHide={() => setDisplayModal(false)}
+        header={editingUnicorn ? "Editar Unicornio" : "Nuevo Unicornio"}
+        style={{ width: '50vw' }}
+        breakpoints={{ '960px': '75vw', '640px': '90vw' }}
+        className="unicorn-dialog"
+      >
+        <UnicornForm 
+          unicorn={editingUnicorn} 
+          onSubmit={onSubmit}
+        />
+      </Dialog>
+    </div>
+  );
 };
 
 export default UnicornsView;

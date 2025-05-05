@@ -1,50 +1,111 @@
 import React from 'react';
 import useUnicornForm from './useUnicornForm';
+import { InputText } from 'primereact/inputtext';
+import { InputNumber } from 'primereact/inputnumber';
+import { Button } from 'primereact/button';
+import { ColorPicker } from 'primereact/colorpicker';
 
-const UnicornForm = () => {
+const UnicornForm = ({ unicorn, onSubmit }) => {
   const {
     formData,
     handleChange,
     handleSubmit,
     isEditing,
     errors
-  } = useUnicornForm();
+  } = useUnicornForm(onSubmit, unicorn);
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        name="name"
-        placeholder="Nombre"
-        value={formData.name}
-        onChange={handleChange}
-      />
-      {errors.name && <p style={{ color: 'red' }}>{errors.name}</p>}
+    <form onSubmit={handleSubmit} className="unicorn-form">
+      <div className="form-field">
+        <label htmlFor="name">
+          <i className="pi pi-tag field-icon"></i>
+          Nombre
+        </label>
+        <InputText
+          id="name"
+          name="name"
+          placeholder="Nombre del unicornio"
+          value={formData.name}
+          onChange={handleChange}
+          className={errors.name ? 'p-invalid' : ''}
+        />
+        {errors.name && <small className="form-error">{errors.name}</small>}
+      </div>
 
-      <input
-        name="age"
-        placeholder="Edad"
-        value={formData.age}
-        onChange={handleChange}
-      />
-      {errors.age && <p style={{ color: 'red' }}>{errors.age}</p>}
+      <div className="form-field">
+        <label htmlFor="age">
+          <i className="pi pi-calendar field-icon"></i>
+          Edad
+        </label>
+        <InputNumber
+          id="age"
+          name="age"
+          placeholder="Edad"
+          value={formData.age}
+          onValueChange={(e) => handleChange({ target: { name: 'age', value: e.value } })}
+          className={errors.age ? 'p-invalid' : ''}
+          showButtons
+          buttonLayout="horizontal"
+          decrementButtonClassName="p-button-secondary"
+          incrementButtonClassName="p-button-secondary"
+          incrementButtonIcon="pi pi-plus"
+          decrementButtonIcon="pi pi-minus"
+        />
+        {errors.age && <small className="form-error">{errors.age}</small>}
+      </div>
 
-      <input
-        name="color"
-        placeholder="Color"
-        value={formData.color}
-        onChange={handleChange}
-      />
-      {errors.color && <p style={{ color: 'red' }}>{errors.color}</p>}
+      <div className="form-field">
+        <label htmlFor="color">
+          <i className="pi pi-palette field-icon"></i>
+          Color
+        </label>
+        <div className="color-picker-container">
+          <ColorPicker
+            id="color"
+            name="color"
+            value={formData.color.replace('#', '')}
+            onChange={(e) => handleChange({ target: { name: 'color', value: `#${e.value}` } })}
+            className={errors.color ? 'p-invalid' : ''}
+          />
+          <div 
+            className="color-preview" 
+            style={{ backgroundColor: formData.color }}
+          ></div>
+          <span className="color-hex-value">{formData.color}</span>
+        </div>
+        {errors.color && <small className="form-error">{errors.color}</small>}
+      </div>
 
-      <input
-        name="power"
-        placeholder="Poder"
-        value={formData.power}
-        onChange={handleChange}
-      />
-      {errors.power && <p style={{ color: 'red' }}>{errors.power}</p>}
+      <div className="form-field">
+        <label htmlFor="power">
+          <i className="pi pi-bolt field-icon"></i>
+          Poder
+        </label>
+        <InputText
+          id="power"
+          name="power"
+          placeholder="Poder especial"
+          value={formData.power}
+          onChange={handleChange}
+          className={errors.power ? 'p-invalid' : ''}
+        />
+        {errors.power && <small className="form-error">{errors.power}</small>}
+      </div>
 
-      <button type="submit">{isEditing ? 'Actualizar' : 'Crear'}</button>
+      <div className="form-actions">
+        <Button 
+          type="button" 
+          label="Cancelar" 
+          className="p-button-text"
+          onClick={() => document.querySelector('.p-dialog-header-close').click()}
+        />
+        <Button 
+          type="submit" 
+          label={isEditing ? "Actualizar" : "Guardar"} 
+          className="p-button-primary unicorn-button"
+          icon={isEditing ? "pi pi-refresh" : "pi pi-save"}
+        />
+      </div>
     </form>
   );
 };

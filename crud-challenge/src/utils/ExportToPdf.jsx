@@ -23,7 +23,16 @@ export const exportToPdf = (data, title, columns) => {
         head: [tableColumn],
         body: tableRows,
         startY: 20,
+        theme: 'grid', // 'striped', 'grid', 'plain'
+        styles: {
+            cellPadding: 3,
+            overflow: 'linebreak',
+            font: 'courier',
+            fontSize: 12,
+            textColor: [0, 0, 0],
+        },
     });
+    
 
     doc.save(
         `${title}.pdf`

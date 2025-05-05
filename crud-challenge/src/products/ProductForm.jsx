@@ -1,4 +1,3 @@
-// ProductForm.jsx
 import React from 'react';
 import useProductForm from './useProductForm';
 
@@ -11,50 +10,50 @@ const ProductForm = ({ onCreate }) => {
   } = useProductForm(onCreate);
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1rem' }}>
-      <input
-        name="name"
-        placeholder="Nombre"
-        value={formData.name}
-        onChange={handleChange}
-        style={styles.input}
-      />
-      {errors.name && <span style={styles.error}>{errors.name}</span>}
+    <form onSubmit={handleSubmit} className="product-form">
+      <div className="form-group">
+        <label htmlFor="name" className="form-label">
+          <span className="label-icon">📝</span>
+          Nombre del producto
+        </label>
+        <input
+          id="name"
+          name="name"
+          placeholder="Ej: Auriculares Bluetooth"
+          value={formData.name}
+          onChange={handleChange}
+          className={`form-input ${errors.name ? 'input-error' : ''}`}
+        />
+        {errors.name && <span className="error-message">{errors.name}</span>}
+      </div>
 
-      <input
-        name="price"
-        placeholder="Precio"
-        value={formData.price}
-        onChange={handleChange}
-        type="number"
-        style={styles.input}
-      />
-      {errors.price && <span style={styles.error}>{errors.price}</span>}
+      <div className="form-group">
+        <label htmlFor="price" className="form-label">
+          <span className="label-icon">💰</span>
+          Precio
+        </label>
+        <div className="price-input-container">
+          <span className="currency-symbol">$</span>
+          <input
+            id="price"
+            name="price"
+            placeholder="0.00"
+            value={formData.price}
+            onChange={handleChange}
+            type="number"
+            step="0.01"
+            className={`form-input price-input ${errors.price ? 'input-error' : ''}`}
+          />
+        </div>
+        {errors.price && <span className="error-message">{errors.price}</span>}
+      </div>
 
-      <button type="submit" style={styles.addButton}>Agregar</button>
+      <button type="submit" className="add-button">
+        <span className="button-icon">+</span>
+        Agregar producto
+      </button>
     </form>
   );
-};
-
-const styles = {
-  input: {
-    padding: '0.5rem',
-    borderRadius: '4px',
-    border: '1px solid #ccc',
-  },
-  error: {
-    color: 'red',
-    fontSize: '0.9rem',
-  },
-  addButton: {
-    backgroundColor: '#38b000',
-    color: '#fff',
-    padding: '0.5rem 1rem',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    alignSelf: 'flex-start',
-  },
 };
 
 export default ProductForm;
